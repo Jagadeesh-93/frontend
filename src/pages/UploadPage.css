@@ -1,0 +1,150 @@
+.upload-container {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 20px;
+  background: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  font-family: Arial, sans-serif;
+}
+
+.upload-container h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Home/Hostel Toggle Switch */
+.toggle-switch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.toggle-switch span {
+  font-weight: bold;
+  cursor: pointer;
+  color: #888;
+}
+
+.toggle-switch .active {
+  color: #000000;
+}
+
+/* Toggle Switch Style */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #000000;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* Input Fields */
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+label {
+  font-weight: bold;
+  color: #555;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  display: block;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+/* Facilities Toggle Buttons */
+.facility-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.toggle-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Upload Button */
+.upload-btn {
+  background: #000000;
+  color: white;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.3s;
+}
+
+.upload-btn:hover {
+  background: #000000;
+}
+
+@media (max-width: 600px) {
+  .grid-3, .grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
