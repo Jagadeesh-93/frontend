@@ -72,7 +72,7 @@ function ProfilePage() {
         <p className="text-gray-600">Email: {user.email}</p>
         <button
           onClick={handleChangePassword}
-          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          className="mt-4 bg-blue-500 text-black px-4 py-2 rounded hover:bg-blue-600"
         >
           Change Password
         </button>

@@ -53,15 +53,15 @@
     "tailwindcss": "^4.0.14"
   },
   "resolutions": {
-    "@svgr/webpack": "^8.1.0",
-    "resolve-url-loader": "^5.0.0",
-    "svgo": "^3.3.2",
-    "postcss": "^8.4.31",
-    "nth-check": "^2.1.1",
-    "css-select": "^5.1.0",
-    "react-scripts/@svgr/webpack": "^8.1.0",
-    "react-scripts/svgo": "^3.3.2",
-    "postcss-svgo/svgo": "^3.3.2"
+    "@svgr/webpack": "8.1.0",
+    "resolve-url-loader": "5.0.0",
+    "svgo": "3.3.2",
+    "postcss": "8.4.31",
+    "nth-check": "2.1.1",
+    "css-select": "5.1.0",
+    "react-scripts/@svgr/webpack": "8.1.0",
+    "react-scripts/svgo": "3.3.2",
+    "postcss-svgo/svgo": "3.3.2"
   },
   "overrides": {
     "lucide-react": {

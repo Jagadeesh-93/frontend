@@ -43,7 +43,7 @@ function HostelPage() {
     } else {
       navigate("/mainpage");
     }
-  }, []);
+  }, [navigate]); // Added 'navigate' to the dependency array
 
   useEffect(() => {
     if (city) {

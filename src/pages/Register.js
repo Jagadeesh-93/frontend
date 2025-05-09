@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { FaHome } from "react-icons/fa";
 import "./AuthStyles.css";
@@ -55,7 +55,7 @@ const Register = () => {
   };
 
   // Function to check username availability (API call disabled due to missing endpoint)
-  const checkUsernameAvailability = async (username) => {
+  const checkUsernameAvailability = useCallback(async (username) => {
     // Temporarily disabled until /check-username endpoint is added to backend
     /*
     setCheckingUsername(true);
@@ -84,10 +84,13 @@ const Register = () => {
     */
     // For now, rely on client-side validation only
     setUsernameError(""); // Clear any previous errors
-  };
+  }, []); // No dependencies since the function doesn't use external state/props
 
   // Debounced version of checkUsernameAvailability
-  const debouncedCheckUsername = debounce(checkUsernameAvailability, 500);
+  const debouncedCheckUsername = useCallback(
+    debounce(checkUsernameAvailability, 500),
+    [checkUsernameAvailability]
+  );
 
   // Effect to validate username and trigger API check
   useEffect(() => {
@@ -98,7 +101,7 @@ const Register = () => {
     } else {
       debouncedCheckUsername(username);
     }
-  }, [formData.username]);
+  }, [formData.username, debouncedCheckUsername]); // Added debouncedCheckUsername to the dependency array
 
   // Function to validate password
   const isValidPassword = (password) => {
