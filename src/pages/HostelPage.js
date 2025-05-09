@@ -43,7 +43,7 @@ function HostelPage() {
     } else {
       navigate("/mainpage");
     }
-  }, [navigate]); // Added 'navigate' to the dependency array
+  }, [navigate]);
 
   useEffect(() => {
     if (city) {
@@ -79,7 +79,9 @@ function HostelPage() {
     try {
       setLoading(true);
       const formattedCity = searchCity.charAt(0).toUpperCase() + searchCity.slice(1).toLowerCase();
-      const res = await axios.get(`http://localhost:5000/api/properties?location=${formattedCity}&type=hostel`);
+      const res = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/properties?location=${formattedCity}&type=hostel`
+      );
       console.log("✅ Hostel API Response:", res.data);
 
       const hostelsArray = res.data.properties || [];

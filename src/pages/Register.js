@@ -24,7 +24,7 @@ const Register = () => {
   });
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const [checkingUsername] = useState(false); // No longer needed, but kept to avoid UI changes
+  const [checkingUsername, setCheckingUsername] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,15 +54,14 @@ const Register = () => {
     return "";
   };
 
-  // Function to check username availability (API call disabled due to missing endpoint)
+  // Function to check username availability
   const checkUsernameAvailability = useCallback(async (username) => {
-    // Temporarily disabled until /check-username endpoint is added to backend
-    /*
     setCheckingUsername(true);
     try {
-      const response = await axios.post("http://localhost:5000/api/users/check-username", {
-        username,
-      });
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/users/check-username`,
+        { username }
+      );
 
       if (response.data.exists) {
         setUsernameError("Username already taken. Try another one.");
@@ -81,10 +80,7 @@ const Register = () => {
     } finally {
       setCheckingUsername(false);
     }
-    */
-    // For now, rely on client-side validation only
-    setUsernameError(""); // Clear any previous errors
-  }, []); // No dependencies since the function doesn't use external state/props
+  }, []);
 
   // Debounced version of checkUsernameAvailability
   const debouncedCheckUsername = useCallback(
@@ -101,7 +97,7 @@ const Register = () => {
     } else {
       debouncedCheckUsername(username);
     }
-  }, [formData.username, debouncedCheckUsername]); // Added debouncedCheckUsername to the dependency array
+  }, [formData.username, debouncedCheckUsername]);
 
   // Function to validate password
   const isValidPassword = (password) => {
@@ -127,7 +123,10 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/api/register", formData);
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/register`,
+        formData
+      );
       alert(response.data.message);
       window.location.href = "/"; // Navigate to login page after successful registration
     } catch (error) {
