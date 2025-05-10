@@ -120,6 +120,22 @@ const UploadPage = () => {
       <h2>Upload New Property</h2>
       {error && <p className="error-message" style={{ color: "red" }}>{error}</p>}
 
+      {/* Note Section */}
+      <div className="note-section bg-yellow-50 p-4 rounded-lg shadow-md mb-6 border border-yellow-200">
+        <h3 className="text-lg font-semibold text-yellow-800 mb-2">Important Guidelines</h3>
+        <ul className="list-disc pl-5 text-gray-700">
+          <li className="mb-1">
+            Do not upload fake data or images. Ensure all information and visuals accurately represent the property.
+          </li>
+          <li className="mb-1">
+            Avoid submitting inappropriate data or images. Content must adhere to community standards and be suitable for all audiences.
+          </li>
+          <li className="mb-1">
+            Violation of these guidelines may lead to serious consequences, including account suspension or legal action.
+          </li>
+        </ul>
+      </div>
+
       {/* Toggle Switch for Home/Hostel */}
       <div className="toggle-switch">
         <span className={propertyType === "home" ? "active" : ""}>Home</span>
@@ -156,15 +172,15 @@ const UploadPage = () => {
             <div className="grid-3">
               <div>
                 <label>Facing:</label>
-                <input type="text" name="facing" value={formData.facing} onChange={handleChange} />
+                <input type="text" name="facing" value={formData.facing} onChange={handleChange} required />
               </div>
               <div>
                 <label>Floor:</label>
-                <input type="text" name="floor" value={formData.floor} onChange={handleChange} />
+                <input type="text" name="floor" value={formData.floor} onChange={handleChange} required />
               </div>
               <div>
                 <label>Carpet Area:</label>
-                <input type="text" name="carpetArea" value={formData.carpetArea} onChange={handleChange} />
+                <input type="text" name="carpetArea" value={formData.carpetArea} onChange={handleChange} required />
               </div>
             </div>
 

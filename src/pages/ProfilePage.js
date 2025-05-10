@@ -6,6 +6,7 @@ import BottomNav from "../components/BottomNav";
 function ProfilePage() {
   const [user, setUser] = useState(null);
   const [error, setError] = useState("");
+  const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,7 +28,7 @@ function ProfilePage() {
             Authorization: `Bearer ${token}`,
           },
           params: {
-            username, // Pass username as a query parameter
+            username,
           },
         });
         setUser(response.data);
@@ -61,6 +62,29 @@ function ProfilePage() {
     navigate("/forgot-password", { state: { fromProfile: true } });
   };
 
+  const handleLogout = () => {
+    console.log("Logging out...");
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("userLocation");
+    localStorage.removeItem("locationPromptHandled");
+    navigate("/");
+  };
+
+  const toggleMenu = () => {
+    console.log("Toggling menu, showMenu was:", showMenu);
+    setShowMenu(!showMenu);
+  };
+
+  const handleMenuOption = (option) => {
+    setShowMenu(false);
+    if (option === "logout") {
+      handleLogout();
+    } else if (option === "favourites") {
+      navigate("/favourites");
+    }
+  };
+
   if (!user && !error) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
@@ -70,7 +94,44 @@ function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 relative">
+      {/* Three-Dot Menu */}
+      <div className="absolute top-4 right-4">
+        <button onClick={toggleMenu} className="menu-btn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="black"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <circle cx="12" cy="5" r="1" />
+            <circle cx="12" cy="12" r="1" />
+            <circle cx="12" cy="19" r="1" />
+          </svg>
+        </button>
+        {showMenu && (
+          <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg">
+            <div
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              onClick={() => handleMenuOption("favourites")}
+            >
+              Favourites
+            </div>
+            <div
+              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              onClick={() => handleMenuOption("logout")}
+            >
+              Logout
+            </div>
+          </div>
+        )}
+      </div>
+
       <h1 className="text-2xl font-bold">👤 Profile</h1>
 
       {error && <p className="text-red-500 mt-2">{error}</p>}
