@@ -92,7 +92,8 @@ label {
   color: #555;
 }
 
-input, select {
+input,
+select {
   width: 100%;
   padding: 8px;
   border: 2px solid #ccc;
@@ -143,8 +144,27 @@ input, select {
   background: #000000;
 }
 
+/* Home Icon Container */
+.home-icon-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.home-icon {
+  font-size: 24px;
+  color: #000000;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.home-icon:hover {
+  color: #555;
+}
+
 @media (max-width: 600px) {
-  .grid-3, .grid-2 {
+  .grid-3,
+  .grid-2 {
     grid-template-columns: 1fr;
   }
 }

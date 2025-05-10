@@ -116,7 +116,6 @@ const UploadPage = () => {
 
   return (
     <div className="upload-container">
-      <FaHome className="home-icon" onClick={() => navigate("/mainpage")} style={{ position: "absolute", top: "20px", left: "20px", cursor: "pointer" }} />
       <h2>Upload New Property</h2>
       {error && <p className="error-message" style={{ color: "red" }}>{error}</p>}
 
@@ -252,6 +251,11 @@ const UploadPage = () => {
         <button className="upload-btn" type="submit" disabled={uploading}>
           {uploading ? "Uploading..." : "Upload"}
         </button>
+
+        {/* Home Icon Below Upload Button */}
+        <div className="home-icon-container">
+          <FaHome className="home-icon" onClick={() => navigate("/mainpage")} />
+        </div>
       </form>
     </div>
   );

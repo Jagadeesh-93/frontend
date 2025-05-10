@@ -115,15 +115,15 @@ function ProfilePage() {
           </svg>
         </button>
         {showMenu && (
-          <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg">
+          <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
             <div
-              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              className="px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer rounded-t-lg"
               onClick={() => handleMenuOption("favourites")}
             >
               Favourites
             </div>
             <div
-              className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              className="px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer rounded-b-lg"
               onClick={() => handleMenuOption("logout")}
             >
               Logout
