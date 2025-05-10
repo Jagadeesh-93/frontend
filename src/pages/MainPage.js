@@ -87,7 +87,12 @@ function MainPage() {
     try {
       setLoading(true);
       const response = await axios.get(
-        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
+        {
+          headers: {
+            "User-Agent": "HappyHomesApp/1.0 (your-email@example.com)",
+          },
+        }
       );
       const extractedCity =
         response.data.address.city ||
@@ -111,7 +116,12 @@ function MainPage() {
     try {
       setLoading(true);
       const formattedCity = searchCity.charAt(0).toUpperCase() + searchCity.slice(1).toLowerCase();
-      const res = await axios.get(`http://localhost:5000/api/properties?location=${formattedCity}&type=home`);
+      const token = localStorage.getItem("token");
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/properties?location=${formattedCity}&type=home`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       console.log("✅ Full API Response:", res.data);
 
       const homesArray = res.data.properties || [];
@@ -127,7 +137,14 @@ function MainPage() {
       setHomes(homesWithImages);
     } catch (error) {
       console.error("❌ Error fetching homes:", error);
-      setHomes([]);
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        alert("Session expired. Please log in again.");
+        navigate("/");
+      } else {
+        setHomes([]);
+      }
     } finally {
       setLoading(false);
     }
@@ -267,7 +284,7 @@ function MainPage() {
               Agree
             </button>
             <button onClick={handleDisagree} className="btn btn-dark">
-              disagree
+              Disagree
             </button>
           </div>
         </div>

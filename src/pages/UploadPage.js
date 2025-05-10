@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import BottomNav from "../components/BottomNav"; // Import BottomNav
+import BottomNav from "../components/BottomNav";
 import "../pages/UploadPage.css";
 
 const UploadPage = () => {
@@ -48,6 +48,13 @@ const UploadPage = () => {
     e.preventDefault();
     setUploading(true);
 
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please log in to upload a property.");
+      setUploading(false);
+      return;
+    }
+
     const data = new FormData();
     data.append("type", propertyType);
 
@@ -64,8 +71,11 @@ const UploadPage = () => {
     });
 
     try {
-      const response = await axios.post("http://localhost:5000/api/properties/add", data, {
-        headers: { "Content-Type": "multipart/form-data" },
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/properties/add`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       alert(response.data.message);
@@ -87,7 +97,14 @@ const UploadPage = () => {
       });
     } catch (error) {
       console.error("Upload Error:", error);
-      alert("Error uploading property");
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        alert("Session expired. Please log in again.");
+        window.location.href = "/";
+      } else {
+        alert("Error uploading property: " + (error.response?.data?.message || "Unknown error"));
+      }
     } finally {
       setUploading(false);
     }
@@ -215,7 +232,7 @@ const UploadPage = () => {
         </button>
       </form>
 
-      <BottomNav /> {/* Add BottomNav */}
+      <BottomNav />
     </div>
   );
 };

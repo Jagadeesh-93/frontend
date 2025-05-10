@@ -20,17 +20,17 @@ const ForgotPassword = () => {
     if (resetToken) {
       setToken(resetToken);
     }
-    console.log("Reset token from URL:", resetToken); // Debug: Log the token
+    console.log("Reset token from URL:", resetToken);
   }, [location]);
 
   // Handle forgot password (send reset link)
   const handleForgotPassword = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/forgot-password", { email });
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/forgot-password`, { email });
       alert(res.data.message);
     } catch (error) {
-      console.error("Forgot Password Error:", error.response?.data); // Debug: Log error
+      console.error("Forgot Password Error:", error.response?.data);
       alert("Error sending reset link: " + (error.response?.data?.message || "Unknown error"));
     }
   };
@@ -45,8 +45,13 @@ const ForgotPassword = () => {
 
     try {
       const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Please log in to change your password.");
+        navigate("/");
+        return;
+      }
       const res = await axios.post(
-        "http://localhost:5000/api/auth/change-password",
+        `${process.env.REACT_APP_API_URL}/api/auth/change-password`,
         { newPassword },
         {
           headers: {
@@ -57,8 +62,15 @@ const ForgotPassword = () => {
       alert(res.data.message);
       navigate("/profile");
     } catch (error) {
-      console.error("Change Password Error:", error.response?.data); // Debug: Log error
-      alert("Error changing password: " + (error.response?.data?.message || "Unknown error"));
+      console.error("Change Password Error:", error.response?.data);
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        alert("Session expired. Please log in again.");
+        navigate("/");
+      } else {
+        alert("Error changing password: " + (error.response?.data?.message || "Unknown error"));
+      }
     }
   };
 
@@ -70,17 +82,17 @@ const ForgotPassword = () => {
       return;
     }
 
-    console.log("Submitting reset request with:", { token, newPassword }); // Debug: Log payload
+    console.log("Submitting reset request with:", { token, newPassword });
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/reset-password", {
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/reset-password`, {
         token,
         newPassword,
       });
       alert(res.data.message);
-      navigate("/"); // Redirect to login page after successful reset
+      navigate("/");
     } catch (error) {
-      console.error("Reset Password Error:", error.response?.data); // Debug: Log error
+      console.error("Reset Password Error:", error.response?.data);
       alert("Error resetting password: " + (error.response?.data?.message || "Unknown error"));
     }
   };
