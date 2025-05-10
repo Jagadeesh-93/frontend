@@ -55,7 +55,12 @@ function HostelPage() {
     try {
       setLoading(true);
       const response = await axios.get(
-        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
+        {
+          headers: {
+            "User-Agent": "HappyHomesApp/1.0 (your-email@example.com)",
+          },
+        }
       );
       const extractedCity =
         response.data.address.city ||
@@ -79,8 +84,19 @@ function HostelPage() {
     try {
       setLoading(true);
       const formattedCity = searchCity.charAt(0).toUpperCase() + searchCity.slice(1).toLowerCase();
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Please log in to view hostels.");
+        navigate("/");
+        return;
+      }
       const res = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/properties?location=${formattedCity}&type=hostel`
+        `${process.env.REACT_APP_API_URL}/api/properties?location=${formattedCity}&type=hostel`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       console.log("✅ Hostel API Response:", res.data);
 
@@ -89,15 +105,22 @@ function HostelPage() {
         throw new Error("Invalid API response format - Expected an array under 'properties'");
       }
 
-      const hostelsWithImageIndex = hostelsArray.map((hostel) => ({
+      const hostelsWithImages = hostelsArray.map((hostel) => ({
         ...hostel,
-        images: hostel.images || [],
+        images: hostel.images.map((img) => `${process.env.REACT_APP_API_URL}${img}`) || [],
       }));
 
-      setHostels(hostelsWithImageIndex);
+      setHostels(hostelsWithImages);
     } catch (error) {
       console.error("❌ Error fetching hostels:", error);
-      setHostels([]);
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        alert("Session expired. Please log in again.");
+        navigate("/");
+      } else {
+        setHostels([]);
+      }
     } finally {
       setLoading(false);
     }

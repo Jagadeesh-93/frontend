@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import BottomNav from "../components/BottomNav";
+import { FaHome } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import "../pages/UploadPage.css";
 
 const UploadPage = () => {
@@ -19,8 +20,9 @@ const UploadPage = () => {
     facilities: { food: false, wifi: false, transport: false, laundry: false },
     images: null,
   });
-
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   // Handle text input changes
   const handleChange = (e) => {
@@ -47,11 +49,13 @@ const UploadPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUploading(true);
+    setError("");
 
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Please log in to upload a property.");
+      setError("Please log in to upload a property.");
       setUploading(false);
+      navigate("/");
       return;
     }
 
@@ -100,10 +104,10 @@ const UploadPage = () => {
       if (error.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-        alert("Session expired. Please log in again.");
-        window.location.href = "/";
+        setError("Session expired. Please log in again.");
+        navigate("/");
       } else {
-        alert("Error uploading property: " + (error.response?.data?.message || "Unknown error"));
+        setError("Error uploading property: " + (error.response?.data?.message || "Unknown error"));
       }
     } finally {
       setUploading(false);
@@ -112,7 +116,9 @@ const UploadPage = () => {
 
   return (
     <div className="upload-container">
+      <FaHome className="home-icon" onClick={() => navigate("/mainpage")} style={{ position: "absolute", top: "20px", left: "20px", cursor: "pointer" }} />
       <h2>Upload New Property</h2>
+      {error && <p className="error-message" style={{ color: "red" }}>{error}</p>}
 
       {/* Toggle Switch for Home/Hostel */}
       <div className="toggle-switch">
@@ -231,8 +237,6 @@ const UploadPage = () => {
           {uploading ? "Uploading..." : "Upload"}
         </button>
       </form>
-
-      <BottomNav />
     </div>
   );
 };

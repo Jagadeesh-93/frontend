@@ -117,6 +117,11 @@ function MainPage() {
       setLoading(true);
       const formattedCity = searchCity.charAt(0).toUpperCase() + searchCity.slice(1).toLowerCase();
       const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Please log in to view properties.");
+        navigate("/");
+        return;
+      }
       const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/properties?location=${formattedCity}&type=home`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -131,7 +136,7 @@ function MainPage() {
 
       const homesWithImages = homesArray.map((home) => ({
         ...home,
-        images: home.images || [],
+        images: home.images.map((img) => `${process.env.REACT_APP_API_URL}${img}`) || [],
       }));
 
       setHomes(homesWithImages);
@@ -146,7 +151,7 @@ function MainPage() {
         setHomes([]);
       }
     } finally {
-      setLoading(false);
+    setLoading(false);
     }
   };
 

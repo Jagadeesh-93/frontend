@@ -9,6 +9,7 @@ const ForgotPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [token, setToken] = useState("");
+  const [error, setError] = useState("");
   const location = useLocation();
   const navigate = useNavigate();
   const fromProfile = location.state?.fromProfile || false;
@@ -19,34 +20,38 @@ const ForgotPassword = () => {
     const resetToken = params.get("token");
     if (resetToken) {
       setToken(resetToken);
+    } else if (!fromProfile) {
+      setError("No reset token found in the URL. Please request a new reset link.");
     }
     console.log("Reset token from URL:", resetToken);
-  }, [location]);
+  }, [location, fromProfile]);
 
   // Handle forgot password (send reset link)
   const handleForgotPassword = async (e) => {
     e.preventDefault();
+    setError("");
     try {
       const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/forgot-password`, { email });
       alert(res.data.message);
     } catch (error) {
       console.error("Forgot Password Error:", error.response?.data);
-      alert("Error sending reset link: " + (error.response?.data?.message || "Unknown error"));
+      setError("Error sending reset link: " + (error.response?.data?.message || "Unknown error"));
     }
   };
 
   // Handle password change (update password from profile)
   const handleChangePassword = async (e) => {
     e.preventDefault();
+    setError("");
     if (newPassword !== confirmPassword) {
-      alert("Passwords do not match!");
+      setError("Passwords do not match!");
       return;
     }
 
     try {
       const token = localStorage.getItem("token");
       if (!token) {
-        alert("Please log in to change your password.");
+        setError("Please log in to change your password.");
         navigate("/");
         return;
       }
@@ -66,10 +71,10 @@ const ForgotPassword = () => {
       if (error.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("user");
-        alert("Session expired. Please log in again.");
+        setError("Session expired. Please log in again.");
         navigate("/");
       } else {
-        alert("Error changing password: " + (error.response?.data?.message || "Unknown error"));
+        setError("Error changing password: " + (error.response?.data?.message || "Unknown error"));
       }
     }
   };
@@ -77,8 +82,9 @@ const ForgotPassword = () => {
   // Handle password reset (using token from email link)
   const handleResetPassword = async (e) => {
     e.preventDefault();
+    setError("");
     if (newPassword !== confirmPassword) {
-      alert("Passwords do not match!");
+      setError("Passwords do not match!");
       return;
     }
 
@@ -93,17 +99,18 @@ const ForgotPassword = () => {
       navigate("/");
     } catch (error) {
       console.error("Reset Password Error:", error.response?.data);
-      alert("Error resetting password: " + (error.response?.data?.message || "Unknown error"));
+      setError("Error resetting password: " + (error.response?.data?.message || "Invalid or expired reset token"));
     }
   };
 
   return (
     <div className="auth-page">
-      <FaHome className="home-icon" onClick={() => (window.location.href = "/")} />
+      <FaHome className="home-icon" onClick={() => navigate("/mainpage")} />
       <div className="auth-container">
         <h2>
           {token ? "Reset Password" : fromProfile ? "Change Password" : "Forgot Password"}
         </h2>
+        {error && <p className="error-message" style={{ color: "red" }}>{error}</p>}
         <form
           className="auth-form"
           onSubmit={
